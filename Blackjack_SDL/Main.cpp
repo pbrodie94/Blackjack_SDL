@@ -5,9 +5,17 @@ void DisplayInstructions();
 
 int main(int argv, char** argc)
 {
+	bool endGame = false;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Texture* bgTexture;
+
+	SDL_Event event;
+
+	TextRenderer* text = nullptr;
+
+	Uint32 deltaT = 75;
+	Uint32 updatedTime = 0;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -33,7 +41,7 @@ int main(int argv, char** argc)
 
 	if (TTF_Init() < 0)
 	{
-		cerr << "TTF error: " << endl;
+		cerr << "TTF error: " << TTF_GetError() << endl;
 		return -1;
 	}
 
@@ -45,16 +53,57 @@ int main(int argv, char** argc)
 	}
 
 	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
 
-	TextRenderer text(renderer);
-	text.Draw("Hello World!", 100, 100, 24);
+	text = new TextRenderer(renderer);
+	text->SetText("Hello World!", 100, 100, 24);
 
-	SDL_RenderPresent(renderer);
+	while (!endGame)
+	{
 
-	SDL_Delay(30000);
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				endGame = true;
+				break;
 
-	SDL_DestroyTexture(bgTexture);
+			case SDL_KEYDOWN:
+
+				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+				{
+					endGame = true;
+				}
+
+				break;
+			}
+		}
+		
+		const Uint8* keys = SDL_GetKeyboardState(nullptr);
+
+		if (keys[SDL_SCANCODE_SPACE] && text != nullptr)
+		{
+			text->visible = false;
+
+			delete text;
+			text = nullptr;
+		}
+
+		SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
+
+		if (text)
+		{
+			text->Draw();
+		}
+
+		SDL_RenderPresent(renderer);
+
+		updatedTime = SDL_GetTicks();
+	}
+
+	delete text;
+	delete bgTexture;
+
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 

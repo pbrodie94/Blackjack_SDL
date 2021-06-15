@@ -8,10 +8,14 @@ public:
 	TextRenderer(SDL_Renderer* renderer);
 	~TextRenderer();
 
-	void Draw(const char* message, int xPos, int yPos, int size);
+	void SetText(const char* message, int xPos, int yPos, int size);
+
+	void Draw();
 
 	bool visible;
 
+	int width;
+	int height;
 private:
 	SDL_Renderer* renderer;
 	SDL_Rect rect;
@@ -20,5 +24,9 @@ private:
 	TTF_Font* font;
 	SDL_Colour colour;
 
+
+	int xPos;
+	int yPos;
+	char* message;
 };
 

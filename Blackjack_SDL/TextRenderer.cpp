@@ -3,27 +3,50 @@
 TextRenderer::TextRenderer(SDL_Renderer* renderer)
 {
 	this->renderer = renderer;
+
+	this->visible = true;
 }
 
 TextRenderer::~TextRenderer()
 {
+	TTF_CloseFont(this->font);
 
+	this->renderer = nullptr;
+	this->texture = nullptr;
+	this->surface = nullptr;
+	this->font = nullptr;
+
+	delete(this->renderer);
+	delete(this->texture);
+	delete(this->surface);
+	delete(this->font);
 }
 
-void TextRenderer::Draw(const char* message, int xPos, int yPos, int size)
+void TextRenderer::SetText(const char* message, int xPos, int yPos, int size)
 {
+	SDL_FreeSurface(this->surface);
+	SDL_DestroyTexture(this->texture);
+
 	this->font = TTF_OpenFont("Fonts/Sans.ttf", size);
 	this->colour = { 255, 255, 255, 255 };
+
+	this->xPos = xPos;
+	this->yPos = yPos;
 
 	this->surface = TTF_RenderText_Solid(this->font, message, this->colour);
 	this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface);
 
-	int width = this->surface->w;
-	int height = this->surface->h;
+	this->width = this->surface->w;
+	this->height = this->surface->h;
 
-	this->rect = { xPos, yPos, width, height };
+	this->rect = { this->xPos, this->yPos, this->width, this->height };
 
-	SDL_RenderCopy(this->renderer, this->texture, NULL, &this->rect);
+}
 
-	SDL_FreeSurface(this->surface);
+void TextRenderer::Draw()
+{
+	if (this->visible)
+	{
+		SDL_RenderCopy(this->renderer, this->texture, NULL, &this->rect);
+	}
 }
