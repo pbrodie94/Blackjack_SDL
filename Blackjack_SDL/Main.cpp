@@ -6,10 +6,6 @@ int main(int argv, char** argc)
 {
 	try {
 		BlackjackGame blackjackGame;
-
-		blackjackGame.Initialize();
-		blackjackGame.LoadResources();
-		blackjackGame.GameLoop();
 	}
 	catch (int error)
 	{

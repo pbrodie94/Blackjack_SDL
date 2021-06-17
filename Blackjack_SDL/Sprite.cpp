@@ -1,36 +1,23 @@
 #include "Sprite.h"
 
-Sprite::Sprite(const char* fileName, int width, int height, SDL_Renderer* renderer)
+Sprite::Sprite(SDL_Texture* texture, int xPos, int yPos, SDL_Renderer* renderer)
 {
 	this->renderer = renderer;
 
 	xPosition = 0;
 	yPosition = 0;
 	
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = width;
-	rect.h = height;
+	rect.x = xPos;
+	rect.y = yPos;
 
 	visible = true;
 	
-	Load(fileName);
+	this->image = texture;
 }
 
 Sprite::~Sprite()
 {
 	SDL_DestroyTexture(image);
-}
-
-void Sprite::Load(const char* fileName)
-{
-	image = IMG_LoadTexture(renderer, fileName);
-
-	if (!image)
-	{
-		cerr << "IMG_LoadTexture Error: " << IMG_GetError() << endl;
-		exit(1);
-	}
 }
 
 void Sprite::Draw()

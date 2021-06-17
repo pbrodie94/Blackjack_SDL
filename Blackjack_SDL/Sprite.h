@@ -18,7 +18,7 @@ protected:
 
 public:
 
-	Sprite(const char* fileName, int width, int height, SDL_Renderer* renderer);
+	Sprite(SDL_Texture* texture, int xPos, int yPos, SDL_Renderer* renderer);
 	~Sprite();
 
 	virtual void Draw();

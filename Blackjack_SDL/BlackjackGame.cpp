@@ -6,6 +6,28 @@ BlackjackGame::BlackjackGame()
 	this->updatedTime = 0;
 
 	this->endGame = false;
+
+	this->playerChips = 2000;
+
+	gameState = GameState::Menu;
+
+	Initialize();
+}
+
+BlackjackGame::~BlackjackGame()
+{
+	delete text;
+	delete t_bettingPot;
+	delete t_playerChips;
+	delete t_playerCardValue;
+	delete t_dealerCardValue;
+	delete bgTexture;
+	delete cardTexture;
+	delete cardFaceTexture;
+	delete cardBackTexture;
+
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
 }
 
 void BlackjackGame::Initialize()
@@ -37,17 +59,24 @@ void BlackjackGame::Initialize()
 		cerr << "TTF error: " << TTF_GetError() << endl;
 		throw -1;
 	}
+
+	LoadResources();
 }
 
 void BlackjackGame::LoadResources()
 {
 	this->bgTexture = IMG_LoadTexture(renderer, "Images/GameBoard.png");
+	this->cardTexture = IMG_LoadTexture(renderer, "Images/Card_Face.png");
+	this->cardFaceTexture = IMG_LoadTexture(renderer, "Images/Card_SuitNums.png");
+	this->cardBackTexture = IMG_LoadTexture(renderer, "Images/Card_Back.png");
 
 	this->text = new TextRenderer(renderer);
 
 	this->text->SetText("Hello World!", 100, 100, 24);
 
 	SDL_RenderClear(renderer);
+
+	GameLoop();
 }
 
 void BlackjackGame::GameLoop()
@@ -73,18 +102,49 @@ void BlackjackGame::GameLoop()
 				break;
 			}
 		}
-
-		const Uint8* keys = SDL_GetKeyboardState(nullptr);
-
-		if (keys[SDL_SCANCODE_SPACE] && text != nullptr)
-		{
-			text->visible = false;
-
-			delete text;
-			text = nullptr;
-		}
-
+		
+		//Draw the background before anything else
 		SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
+
+		switch (BlackjackGame::gameState)
+		{
+
+		case GameState::Menu:
+
+			MainMenu();
+
+			break;
+
+		case GameState::Betting:
+
+			TakeBet();
+
+			break;
+
+		case GameState::PlayersTurn:
+
+			PlayerTurn();
+
+			break;
+
+		case GameState::DealersTurn:
+
+			DealerTurn();
+
+			break;
+
+		case GameState::EndOfRound:
+
+			EndGame();
+
+			break;
+
+		case GameState::GameIsOver:
+
+			GameOver();
+
+			break;
+		}
 
 		if (text)
 		{
@@ -95,10 +155,44 @@ void BlackjackGame::GameLoop()
 
 		updatedTime = SDL_GetTicks();
 	}
+}
 
-	delete text;
-	delete bgTexture;
+void BlackjackGame::StartRound()
+{
 
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+}
+
+void BlackjackGame::MainMenu()
+{
+
+}
+
+void BlackjackGame::TakeBet()
+{
+
+}
+
+void BlackjackGame::DealCards()
+{
+
+}
+
+void BlackjackGame::PlayerTurn()
+{
+
+}
+
+void BlackjackGame::DealerTurn()
+{
+
+}
+
+void BlackjackGame::EndGame()
+{
+
+}
+
+void BlackjackGame::GameOver()
+{
+
 }
