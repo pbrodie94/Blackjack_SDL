@@ -1,111 +1,20 @@
-#include "Definitions.h"
-#include "TextRenderer.h"
+#include "BlackjackGame.h"
 
 void DisplayInstructions();
 
 int main(int argv, char** argc)
 {
-	bool endGame = false;
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	SDL_Texture* bgTexture;
+	try {
+		BlackjackGame blackjackGame;
 
-	SDL_Event event;
-
-	TextRenderer* text = nullptr;
-
-	Uint32 deltaT = 75;
-	Uint32 updatedTime = 0;
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		cerr << "Unable to initialize SDL -> " << SDL_GetError() << endl;
-		return -1;
+		blackjackGame.Initialize();
+		blackjackGame.LoadResources();
+		blackjackGame.GameLoop();
 	}
-
-	atexit(SDL_Quit);
-
-	window = SDL_CreateWindow("Blackjack", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
-	if (!window)
+	catch (int error)
 	{
-		cerr << "SDL Create Window Error -> " << SDL_GetError() << endl;
-		return -1;
+		return error;
 	}
-
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!renderer)
-	{
-		cerr << "SDL_CreateRenderer Error -> " << SDL_GetError() << endl;
-		return -1;
-	}
-
-	if (TTF_Init() < 0)
-	{
-		cerr << "TTF error: " << TTF_GetError() << endl;
-		return -1;
-	}
-
-	bgTexture = IMG_LoadTexture(renderer, "Images/GameBoard.png");
-	if (!bgTexture)
-	{
-		cerr << "IMG_LoadTexture Error -> " << IMG_GetError() << endl;
-		return -1;
-	}
-
-	SDL_RenderClear(renderer);
-
-	text = new TextRenderer(renderer);
-	text->SetText("Hello World!", 100, 100, 24);
-
-	while (!endGame)
-	{
-
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_QUIT:
-				endGame = true;
-				break;
-
-			case SDL_KEYDOWN:
-
-				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-				{
-					endGame = true;
-				}
-
-				break;
-			}
-		}
-		
-		const Uint8* keys = SDL_GetKeyboardState(nullptr);
-
-		if (keys[SDL_SCANCODE_SPACE] && text != nullptr)
-		{
-			text->visible = false;
-
-			delete text;
-			text = nullptr;
-		}
-
-		SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
-
-		if (text)
-		{
-			text->Draw();
-		}
-
-		SDL_RenderPresent(renderer);
-
-		updatedTime = SDL_GetTicks();
-	}
-
-	delete text;
-	delete bgTexture;
-
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
 
 	cout << "Program ran successfully.\n" << endl;
 
