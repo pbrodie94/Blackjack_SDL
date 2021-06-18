@@ -8,9 +8,16 @@ public:
 	TextRenderer(SDL_Renderer* renderer);
 	~TextRenderer();
 
+	void SetText(const char* message);
 	void SetText(const char* message, int xPos, int yPos, int size);
 
 	void Draw();
+
+	void SetXPosition(int xPos);
+	void SetYPosition(int yPos);
+
+	int GetXPosition() { return xPos; }
+	int GetYPosition() { return yPos; }
 
 	bool visible;
 

@@ -8,6 +8,8 @@
 #include <sdl_ttf.h>
 #include <sdl_mixer.h>
 
+#include "TextRenderer.h"
+
 using namespace std;
 
 #define SCREEN_WIDTH 640
