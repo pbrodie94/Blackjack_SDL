@@ -1,12 +1,23 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "Definitions.h"
 #include "CardDeck.h"
 #include "BlackjackHand.h"
 
+using namespace std;
+
 class BlackjackGame
 {
 private:
+
+	int SCREENWIDTH;
+	int SCREENHEIGHT;
+
+	vector<TextRenderer*> activeText;
+	vector<BlackjackHand*> activeHands;
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
@@ -15,8 +26,10 @@ private:
 	SDL_Texture* cardFaceTexture;
 	SDL_Texture* cardBackTexture;
 	TextRenderer* text;
+	TextRenderer* t_instructionsText;
 	TextRenderer* t_playerChips;
 	TextRenderer* t_bettingPot;
+	TextRenderer* t_betText;
 	TextRenderer* t_playerCardValue;
 	TextRenderer* t_dealerCardValue;
 
@@ -27,10 +40,12 @@ private:
 
 	int playerChips;
 	int bettingPot;
+	int bet;
+	string betString;
 	CardDeck deck;
 	bool endGame;
-	BlackjackHand playerHands[2];
-	BlackjackHand dealerHand;
+	BlackjackHand* playerHands[2];
+	BlackjackHand* dealerHand;
 
 	enum GameState {
 		Menu,
@@ -47,15 +62,19 @@ private:
 	void LoadResources();
 	void GameLoop();
 
-	void MainMenu();
+	void MainMenu(const Uint8* keys);
+	void StartGame();
 
 	void StartRound();
-	void TakeBet();
+	void TakeBet(const Uint8* keys);
 	void DealCards();
-	void PlayerTurn();
+	void PlayerTurn(const Uint8* keys);
 	void DealerTurn();
-	void EndGame();
-	void GameOver();
+	void EndGame(const Uint8* keys);
+	void GameOver(const Uint8* keys);
+
+	void UpdateChips();
+	void DrawElements();
 
 public:
 

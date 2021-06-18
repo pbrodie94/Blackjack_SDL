@@ -14,8 +14,21 @@ CardDeck::CardDeck(int numDecks)
 	CreateDeck();
 }
 
+void CardDeck::SetNumberDecks(int decks)
+{
+	if (decks > 0 && decks <= 8)
+	{
+		this->numDecks = decks;
+	}
+}
+
 void CardDeck::CreateDeck()
 {
+	if (deck.size() > 0)
+	{
+		DestroyDeck();
+	}
+
 	//Loop through the number of decks
 	for (int i = 0; i < numDecks; i++)
 	{

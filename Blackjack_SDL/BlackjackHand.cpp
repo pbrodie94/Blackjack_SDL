@@ -95,6 +95,9 @@ void BlackjackHand::AddCard(PlayingCard card)
 
 void BlackjackHand::DisplayHand()
 {
+	if (numCards <= 0)
+		return;
+
 	//Access the cards in hand and draw them to screen with the cardsprite objects
 	int offset = 10 * numCards - 1;
 
@@ -116,6 +119,20 @@ void BlackjackHand::DisplayHand()
 	for (int i = 0; i < cardSprites.size(); i++)
 	{
 		cardSprites[i]->Draw();
+	}
+}
+
+void BlackjackHand::DrawHand()
+{
+	if (numCards <= 0)
+		return;
+
+	for (int i = 0; i < cardSprites.size(); i++)
+	{
+		if (cardSprites[i]->visible)
+		{
+			cardSprites[i]->Draw();
+		}
 	}
 }
 

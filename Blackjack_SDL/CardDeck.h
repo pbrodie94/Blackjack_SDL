@@ -8,7 +8,6 @@
 class CardDeck
 {
 private:
-	void CreateDeck();
 	void ShuffleDeck();
 
 	int numDecks;
@@ -19,6 +18,8 @@ public:
 	CardDeck();
 	CardDeck(int numDecks);
 
+	void CreateDeck();
+	void SetNumberDecks(int decks);
 	PlayingCard DrawCard();
 	void DestroyDeck();
 

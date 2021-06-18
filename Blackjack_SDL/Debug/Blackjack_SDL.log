@@ -1,35 +1,16 @@
 ﻿  BlackjackGame.cpp
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(24,18): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(30,18): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
 C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(25,20): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(31,20): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
 C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(26,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(32,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
 C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(27,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(33,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
 C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-  BlackjackHand.cpp
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(23,17): warning C4150: deletion of pointer to incomplete type 'SDL_Renderer'; no destructor called
-C:\SDL2-2.0.12\include\SDL_render.h(132): message : see declaration of 'SDL_Renderer'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(24,20): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
-C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(25,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
-C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(26,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
-C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(116,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(134,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(341,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(352,21): warning C4018: '<': signed/unsigned mismatch
   CardDeck.cpp
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\CardDeck.cpp(84,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  CardSprite.cpp
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\CardDeck.cpp(97,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Main.cpp
-  PlayingCard.cpp
-  Sprite.cpp
-  TextRenderer.cpp
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\TextRenderer.cpp(19,24): warning C4150: deletion of pointer to incomplete type 'SDL_Renderer'; no destructor called
-C:\SDL2-2.0.12\include\SDL_render.h(132): message : see declaration of 'SDL_Renderer'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\TextRenderer.cpp(20,23): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
-C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\TextRenderer.cpp(22,20): warning C4150: deletion of pointer to incomplete type '_TTF_Font'; no destructor called
-C:\SDL2-2.0.12\include\sdl_ttf.h(98): message : see declaration of '_TTF_Font'
   Generating Code...
   Blackjack_SDL.vcxproj -> C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Debug\Blackjack_SDL.exe

@@ -8,6 +8,7 @@ public:
 	TextRenderer(SDL_Renderer* renderer);
 	~TextRenderer();
 
+	void SetText(const char* message);
 	void SetText(const char* message, int xPos, int yPos, int size);
 
 	void Draw();

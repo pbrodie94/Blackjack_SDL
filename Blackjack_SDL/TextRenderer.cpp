@@ -22,6 +22,20 @@ TextRenderer::~TextRenderer()
 	delete(this->font);
 }
 
+void TextRenderer::SetText(const char* message)
+{
+	SDL_FreeSurface(this->surface);
+	SDL_DestroyTexture(this->texture);
+
+	this->surface = TTF_RenderText_Solid(this->font, message, this->colour);
+	this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface);
+
+	this->width = this->surface->w;
+	this->height = this->surface->h;
+
+	this->rect = { this->xPos, this->yPos, this->width, this->height };
+}
+
 void TextRenderer::SetText(const char* message, int xPos, int yPos, int size)
 {
 	SDL_FreeSurface(this->surface);

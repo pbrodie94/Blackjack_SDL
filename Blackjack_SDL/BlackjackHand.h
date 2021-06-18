@@ -8,6 +8,8 @@
 class BlackjackHand
 {
 private:
+	void DisplayHand();
+
 	vector<PlayingCard> cards;
 
 	int numAces;
@@ -28,7 +30,7 @@ public:
 	~BlackjackHand();
 
 	void AddCard(PlayingCard card);
-	void DisplayHand();
+	void DrawHand();
 	void ResetHand();
 
 	int GetNumCards() { return numCards; }
