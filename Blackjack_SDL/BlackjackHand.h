@@ -17,6 +17,10 @@ private:
 
 	int startXPos;
 	int startYPos;
+	
+	bool bust;
+	bool blackJack;
+	bool canSplit;
 
 	vector<CardSprite*> cardSprites;
 	SDL_Renderer* renderer;
@@ -30,15 +34,17 @@ public:
 	~BlackjackHand();
 
 	void AddCard(PlayingCard card);
+	void SplitHand(BlackjackHand& otherHand);
 	void DrawHand();
 	void ResetHand();
 
 	int GetNumCards() { return numCards; }
 
+	bool GetIsBlackjack() { return blackJack; }
+	bool GetIsBust() { return bust; }
+	bool GetCanSplit() { return canSplit; }
+
 	bool stand;
-	bool bust;
-	bool blackJack;
-	bool canSplit;
 	int handValue;
 };
 

@@ -68,6 +68,7 @@ void BlackjackHand::AddCard(PlayingCard card)
 	if (handValue > 21)
 	{
 		bust = true;
+		stand = true;
 
 		while (numAces > 0)
 		{
@@ -77,6 +78,7 @@ void BlackjackHand::AddCard(PlayingCard card)
 			if (handValue < 21)
 			{
 				bust = false;
+				stand = false;
 				break;
 			}
 		}
@@ -90,7 +92,24 @@ void BlackjackHand::AddCard(PlayingCard card)
 		{
 			canSplit = true;
 		}
+
+		if (handValue == 21)
+		{
+			blackJack = true;
+			stand = true;
+		}
 	}
+
+	DisplayHand();
+}
+
+void BlackjackHand::SplitHand(BlackjackHand& otherHand)
+{
+	if (!canSplit)
+		return;
+
+	otherHand.AddCard(cards.back());
+	cards.pop_back();
 }
 
 void BlackjackHand::DisplayHand()
@@ -101,25 +120,17 @@ void BlackjackHand::DisplayHand()
 	//Access the cards in hand and draw them to screen with the cardsprite objects
 	int offset = 10 * numCards - 1;
 
-	CardSprite* newSprite;
-
 	if (!cards[numCards - 1].hidden)
 	{
-		newSprite = new CardSprite(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos + offset, startYPos, cardTexture, cardFaceTexture, renderer);
+		cardSprites.push_back(new CardSprite(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos + offset, startYPos, cardTexture, cardFaceTexture, renderer));
 	}
 	else {
-		newSprite = new CardSprite(startXPos + offset, startYPos, cardBackTexture, renderer);
+		cardSprites.push_back(new CardSprite(startXPos + offset, startYPos, cardBackTexture, renderer));
 	}
 
-	cardSprites.push_back(newSprite);
+	//cardSprites.push_back(newSprite);
+	
 
-	delete newSprite;
-	newSprite = nullptr;
-
-	for (int i = 0; i < cardSprites.size(); i++)
-	{
-		cardSprites[i]->Draw();
-	}
 }
 
 void BlackjackHand::DrawHand()
@@ -129,7 +140,7 @@ void BlackjackHand::DrawHand()
 
 	for (int i = 0; i < cardSprites.size(); i++)
 	{
-		if (cardSprites[i]->visible)
+		if (cardSprites[i]->visible && cardSprites[i] != nullptr)
 		{
 			cardSprites[i]->Draw();
 		}

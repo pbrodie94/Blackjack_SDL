@@ -25,13 +25,14 @@ private:
 	SDL_Texture* cardTexture;
 	SDL_Texture* cardFaceTexture;
 	SDL_Texture* cardBackTexture;
-	TextRenderer* text;
+	SDL_Texture* dealerTexture;
 	TextRenderer* t_instructionsText;
 	TextRenderer* t_playerChips;
 	TextRenderer* t_bettingPot;
 	TextRenderer* t_betText;
 	TextRenderer* t_playerCardValue;
 	TextRenderer* t_dealerCardValue;
+	Sprite* s_dealer;
 
 	SDL_Event event;
 
@@ -44,6 +45,7 @@ private:
 	string betString;
 	CardDeck deck;
 	bool endGame;
+	bool playerSplitHand;
 	BlackjackHand* playerHands[2];
 	BlackjackHand* dealerHand;
 
@@ -70,11 +72,14 @@ private:
 	void DealCards();
 	void PlayerTurn(const Uint8* keys);
 	void DealerTurn();
-	void EndGame(const Uint8* keys);
+	void EndGame();
 	void GameOver(const Uint8* keys);
 
 	void UpdateChips();
+	void UpdateText();
 	void DrawElements();
+
+	int CheckWin(int hand);
 
 public:
 

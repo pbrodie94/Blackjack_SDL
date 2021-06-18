@@ -13,6 +13,12 @@ public:
 
 	void Draw();
 
+	void SetXPosition(int xPos);
+	void SetYPosition(int yPos);
+
+	int GetXPosition() { return xPos; }
+	int GetYPosition() { return yPos; }
+
 	bool visible;
 
 	int width;

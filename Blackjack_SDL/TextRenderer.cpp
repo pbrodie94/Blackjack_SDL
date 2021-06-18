@@ -64,3 +64,13 @@ void TextRenderer::Draw()
 		SDL_RenderCopy(this->renderer, this->texture, NULL, &this->rect);
 	}
 }
+
+void TextRenderer::SetXPosition(int xPos)
+{
+	this->rect.x = xPos;
+}
+
+void TextRenderer::SetYPosition(int yPos)
+{
+	this->rect.y = yPos;
+}

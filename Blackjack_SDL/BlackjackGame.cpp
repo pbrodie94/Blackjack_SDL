@@ -13,6 +13,7 @@ BlackjackGame::BlackjackGame()
 	this->playerChips = 2000;
 	this->bettingPot = 0;
 	this->bet = 0;
+	this->playerSplitHand = false;
 
 	gameState = GameState::Menu;
 
@@ -21,7 +22,6 @@ BlackjackGame::BlackjackGame()
 
 BlackjackGame::~BlackjackGame()
 {
-	delete text;
 	delete t_instructionsText;
 	delete t_bettingPot;
 	delete t_playerChips;
@@ -31,6 +31,8 @@ BlackjackGame::~BlackjackGame()
 	delete cardTexture;
 	delete cardFaceTexture;
 	delete cardBackTexture;
+	delete dealerTexture;
+	delete s_dealer;
 
 	delete playerHands[0];
 	delete playerHands[1];
@@ -94,16 +96,20 @@ void BlackjackGame::LoadResources()
 	this->cardTexture = IMG_LoadTexture(renderer, "Images/Card_Face.png");
 	this->cardFaceTexture = IMG_LoadTexture(renderer, "Images/Card_SuitNums.png");
 	this->cardBackTexture = IMG_LoadTexture(renderer, "Images/Card_Back.png");
+	this->dealerTexture = IMG_LoadTexture(renderer, "Images/Dealer_Idle.png");
 
-	this->text = new TextRenderer(renderer);
 	this->t_instructionsText = new TextRenderer(renderer);
-
-	this->text->SetText("Press space to start.", 100, 100, 24);
 	this->t_instructionsText->SetText("Press Space to Start", SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
-	activeText.push_back(text);
+	this->t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
 	activeText.push_back(t_instructionsText);
 
 	SDL_RenderClear(renderer);
+
+	s_dealer = new Sprite(dealerTexture, SCREENWIDTH / 2, 50, renderer);
+	s_dealer->SetWidth(69);
+	s_dealer->SetHeight(76);
+	s_dealer->SetXPosition(s_dealer->GetXPosition() - s_dealer->GetWidth() / 2);
+	//s_dealer->visible = false;
 
 	playerHands[0] = new BlackjackHand(SCREENWIDTH - 100, SCREENHEIGHT - 100, renderer, cardTexture, cardBackTexture, cardFaceTexture);
 	playerHands[1] = new BlackjackHand(SCREENWIDTH - 100, SCREENHEIGHT - 130, renderer, cardTexture, cardBackTexture, cardFaceTexture);
@@ -190,7 +196,7 @@ void BlackjackGame::GameLoop()
 
 		case GameState::EndOfRound:
 
-			EndGame(keys);
+			EndGame();
 
 			break;
 
@@ -214,8 +220,6 @@ void BlackjackGame::MainMenu(const Uint8* keys)
 {
 	if (keys[SDL_SCANCODE_SPACE])
 	{
-		this->text->SetText("Start Game");
-
 		StartGame();
 	}
 }
@@ -229,6 +233,7 @@ void BlackjackGame::StartGame()
 	{
 		t_playerChips = new TextRenderer(renderer);
 	}
+	t_playerChips->visible = true;
 	t_playerChips->SetText("Chips: 0", 50, SCREENHEIGHT - 100, 15);
 	activeText.push_back(t_playerChips);
 
@@ -245,6 +250,7 @@ void BlackjackGame::StartGame()
 	UpdateChips();
 
 	//Show dealer
+	s_dealer->visible = true;
 
 	StartRound();
 }
@@ -256,12 +262,16 @@ void BlackjackGame::StartRound()
 	playerHands[1]->ResetHand();
 	dealerHand->ResetHand();
 
+	playerSplitHand = false;
+
 	gameState = GameState::Betting;
 }
 
 void BlackjackGame::TakeBet(const Uint8* keys)
 {
+	t_instructionsText->visible = true;
 	t_instructionsText->SetText("Enter your bet with number keys then press enter.", SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
+	t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
 
 	//Display betting text
 	if (t_betText == nullptr)
@@ -300,27 +310,251 @@ void BlackjackGame::DealCards()
 {
 	playerHands[0]->AddCard(deck.DrawCard());
 
+	PlayingCard card = deck.DrawCard();
+	card.hidden = true;
+
+	dealerHand->AddCard(card);
+
+	playerHands[0]->AddCard(deck.DrawCard());
+	dealerHand->AddCard(deck.DrawCard());
+
 	gameState = GameState::PlayersTurn;
+
+	if (t_dealerCardValue == nullptr)
+	{
+		t_dealerCardValue = new TextRenderer(renderer);
+	}
+
+	if (t_playerCardValue == nullptr)
+	{
+		t_playerCardValue = new TextRenderer(renderer);
+	}
+
+	UpdateText();
 }
 
 void BlackjackGame::PlayerTurn(const Uint8* keys)
 {
+	if (!playerSplitHand && playerHands[0]->GetIsBlackjack() || playerHands[0]->stand || playerHands[0]->GetIsBust())
+	{
+		//Turn over
+		t_instructionsText->visible = false;
+		gameState = GameState::DealersTurn;
+		return;
+	}
+	else if (playerSplitHand && playerHands[0]->stand && playerHands[1]->stand) {
+		t_instructionsText->visible = false;
+		gameState = GameState::DealersTurn;
+		return;
+	}
 
+	string turnMessage = "Press 'H' to Hit, 'S' to Stand";
+
+	if (playerHands[0]->GetNumCards() == 2 && !playerSplitHand)
+	{
+		turnMessage += ", 'D' to double down";
+	}
+
+	if (playerHands[0]->GetCanSplit() && !playerSplitHand)
+	{
+		turnMessage += ", 'P' to split";
+	}
+
+	turnMessage += ".";
+
+	t_instructionsText->visible = true;
+	t_instructionsText->SetText(turnMessage.c_str(), SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
+	t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
+
+	//Get player input
+	if (keys[SDL_SCANCODE_H])
+	{
+		//Hit
+		if (!playerHands[0]->stand)
+		{
+			playerHands[0]->AddCard(deck.DrawCard());
+		}
+		else {
+			playerHands[1]->AddCard(deck.DrawCard());
+		}
+		return;
+	}
+	else if (keys[SDL_SCANCODE_S])
+	{
+		//Stand
+		if (!playerHands[0]->stand)
+		{
+			playerHands[0]->stand = true;
+		}
+		else {
+			playerHands[1]->stand = true;
+		}
+		return;
+	}
+	else if (keys[SDL_SCANCODE_D])
+	{
+		if (!playerSplitHand && playerHands[0]->GetNumCards() == 2)
+		{
+			//Double down
+			if (playerChips >= bettingPot)
+			{
+				playerChips -= bettingPot;
+				bettingPot *= 2;
+				UpdateChips();
+				playerHands[0]->AddCard(deck.DrawCard());
+				playerHands[0]->stand = true;
+				return;
+			}
+		}
+	}
+	else if (keys[SDL_SCANCODE_P])
+	{
+		if (playerHands[0]->GetCanSplit() && !playerSplitHand && playerChips >= bettingPot)
+		{
+			//Split
+			playerHands[0]->SplitHand(*playerHands[1]);
+			playerSplitHand = true;
+			playerChips -= bettingPot;
+			bettingPot *= 2;
+			playerHands[0]->AddCard(deck.DrawCard());
+			playerHands[1]->AddCard(deck.DrawCard());
+			return;
+		}
+	}
 }
 
 void BlackjackGame::DealerTurn()
 {
+	if (dealerHand->GetIsBlackjack() || dealerHand->stand || dealerHand->GetIsBust())
+	{
+		//Dealer turn over
+		gameState = GameState::EndOfRound;
+		return;
+	}
+	
+	if (dealerHand->handValue > 17)
+	{
+		dealerHand->stand = true;
+		return;
+	}
 
+	//Dealer hits
+	dealerHand->AddCard(deck.DrawCard());
 }
 
-void BlackjackGame::EndGame(const Uint8* keys)
+void BlackjackGame::EndGame()
 {
+	//Check for win
+	int winnings = 0;
+	int handResult = CheckWin(0);
+	int playerBet = bettingPot;
 
+	if (playerSplitHand)
+	{
+		playerBet /= 2;
+	}
+
+	switch (handResult)
+	{
+	case 0:
+		//Lose
+		//Display house wins
+
+		break;
+
+	case 1:
+		//Push, return bet
+		//display push, bet returned
+		
+		playerChips += playerBet;
+
+		break;
+
+	case 2:
+		//Win
+		//Display you win!
+
+		winnings = playerBet * 2;
+		playerChips += winnings;
+
+		break;
+
+	case 3:
+		//Blackjack win
+
+		//Display Blackjack!
+
+		winnings = playerBet + (playerBet * 1.5);
+		playerChips += winnings;
+
+		break;
+	}
+
+	if (playerSplitHand)
+	{
+		handResult = CheckWin(1);
+
+		switch (handResult)
+		{
+		case 0:
+			//Lose
+			//Display house wins
+
+			break;
+
+		case 1:
+			//Push, return bet
+			//display push, bet returned
+
+			playerChips += playerBet;
+
+			break;
+
+		case 2:
+			//Win
+			//Display you win!
+
+			winnings = playerBet * 2;
+			playerChips += winnings;
+
+			break;
+
+		case 3:
+			//Blackjack win
+
+			//Display Blackjack!
+
+			winnings = playerBet + (playerBet * 1.5);
+			playerChips += winnings;
+
+			break;
+		}
+	}
+
+	bettingPot = 0;
+	UpdateChips();
+
+	t_playerCardValue->visible = false;
+	t_dealerCardValue->visible = false;
+
+	if (playerChips > 0)
+	{
+		StartRound();
+		return;
+	}
+
+	gameState = GameState::GameIsOver;
 }
 
 void BlackjackGame::GameOver(const Uint8* keys)
 {
+	//Display game over 
 
+	//Press space to play again or 
+	if (keys[SDL_SCANCODE_SPACE])
+	{
+		StartGame();
+	}
 }
 
 void BlackjackGame::UpdateChips()
@@ -332,6 +566,17 @@ void BlackjackGame::UpdateChips()
 	string potText = "Pot: " + to_string(bettingPot);
 	//t_bettingPot->SetText(potText.c_str());
 	t_bettingPot->SetText(potText.c_str(), 50, 250, 15);
+}
+
+void BlackjackGame::UpdateText()
+{
+	string cardValue = to_string(dealerHand->handValue);
+	t_dealerCardValue->SetText(cardValue.c_str(), 100, 100, 20);
+	t_dealerCardValue->visible = true;
+
+	cardValue = to_string(playerHands[0]->handValue);
+	t_playerCardValue->SetText(cardValue.c_str(), 100, SCREENHEIGHT - 100, 20);
+	t_playerCardValue->visible = true;
 }
 
 void BlackjackGame::DrawElements()
@@ -352,6 +597,44 @@ void BlackjackGame::DrawElements()
 		for (int i = 0; i < activeHands.size(); i++)
 		{
 			activeHands[i]->DrawHand();
+		}
+	}
+
+	s_dealer->Draw();
+}
+
+int BlackjackGame::CheckWin(int hand)
+{
+	//Return 0 for lose, 1 for push, 2 for win, 3 for blackjack win
+
+	if (playerHands[hand]->GetIsBust())
+	{
+		//Lose
+		return 0;
+	}
+	else if (dealerHand->handValue > playerHands[hand]->handValue && !dealerHand->GetIsBust())
+	{
+		//Lose
+		return 0;
+
+	}
+	else {
+
+		if (playerHands[hand]->handValue == dealerHand->handValue)
+		{
+			return 1;
+		}
+		else if (playerHands[hand]->handValue > dealerHand->handValue || dealerHand->GetIsBust())
+		{
+			//win
+			if (playerHands[hand]->GetIsBlackjack())
+			{
+				return 3;
+			}
+			else {
+
+				return 2;
+			}
 		}
 	}
 }
