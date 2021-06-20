@@ -81,9 +81,6 @@ private:
 
 	int CheckWin(int hand);
 
-	void PollEvent();
-	string GetButtonDown();
-
 public:
 
 	BlackjackGame();
