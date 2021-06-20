@@ -62,7 +62,7 @@ void BlackjackGame::Initialize()
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		cerr << "Unable to initialize SDL -> " << SDL_GetError() << endl;
-		throw - 1;
+		throw 1;
 	}
 
 	atexit(SDL_Quit);
@@ -71,20 +71,20 @@ void BlackjackGame::Initialize()
 	if (!window)
 	{
 		cerr << "SDL Create Window Error -> " << SDL_GetError() << endl;
-		throw -1;
+		throw 1;
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!renderer)
 	{
 		cerr << "SDL_CreateRenderer Error -> " << SDL_GetError() << endl;
-		throw -1;
+		throw 1;
 	}
 
 	if (TTF_Init() < 0)
 	{
 		cerr << "TTF error: " << TTF_GetError() << endl;
-		throw -1;
+		throw 1;
 	}
 
 	LoadResources();
@@ -93,17 +93,35 @@ void BlackjackGame::Initialize()
 void BlackjackGame::LoadResources()
 {
 	this->bgTexture = IMG_LoadTexture(renderer, "Images/GameBoard.png");
+	if (!bgTexture)
+	{
+		cerr << "Could not load GameBoard Texture." << endl;
+	}
 	this->cardTexture = IMG_LoadTexture(renderer, "Images/Card_Face.png");
+	if (!cardTexture)
+	{
+		cerr << "Could not load Card Texture." << endl;
+	}
 	this->cardFaceTexture = IMG_LoadTexture(renderer, "Images/Card_SuitNums.png");
+	if (!cardFaceTexture)
+	{
+		cerr << "Could not load Card Face Texture." << endl;
+	}
 	this->cardBackTexture = IMG_LoadTexture(renderer, "Images/Card_Back.png");
+	if (!cardBackTexture)
+	{
+		cerr << "Could not load Card Back Texture." << endl;
+	}
 	this->dealerTexture = IMG_LoadTexture(renderer, "Images/Dealer_Idle.png");
+	if (!dealerTexture)
+	{
+		cerr << "Could not load Dealer Texture." << endl;
+	}
 
 	this->t_instructionsText = new TextRenderer(renderer);
 	this->t_instructionsText->SetText("Press Space to Start", SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
 	this->t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
 	activeText.push_back(t_instructionsText);
-
-	SDL_RenderClear(renderer);
 
 	s_dealer = new Sprite(dealerTexture, SCREENWIDTH / 2, 50, renderer);
 	s_dealer->SetWidth(69);
@@ -129,41 +147,7 @@ void BlackjackGame::GameLoop()
 {
 	while (!endGame)
 	{
-
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_QUIT:
-				endGame = true;
-				break;
-
-			case SDL_KEYDOWN:
-
-				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-				{
-					endGame = true;
-				}
-
-				if (gameState == GameState::Betting)
-				{
-					const char* key = SDL_GetKeyName(event.key.keysym.sym);
-					char k = key[strlen(key) - 1];
-					
-					if (isdigit(k))
-					{
-						betString += k;
-						bet = stoi(betString);
-					}
-					
-				}
-
-				break;
-			}
-		}
-		
-		//Draw the background before anything else
-		SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
+		PollEvent();
 
 		const Uint8* keys = SDL_GetKeyboardState(nullptr);
 
@@ -206,6 +190,10 @@ void BlackjackGame::GameLoop()
 
 			break;
 		}
+
+		//Draw the background before anything else
+		//SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
 
 		//Draw other game pieces to screen
 		DrawElements();
@@ -280,42 +268,53 @@ void BlackjackGame::TakeBet(const Uint8* keys)
 		activeText.push_back(t_betText);
 	}
 
-	//take in numeric input in update loop
-
+	t_betText->visible = true;
 	string betText = "Bet: " + to_string(bet);
 	t_betText->SetText(betText.c_str(), SCREENHEIGHT / 2, SCREENWIDTH / 2, 15);
 
-	//Check for enter press
-	if (keys[SDL_SCANCODE_RETURN] || keys[SDL_SCANCODE_RETURN2])
+	//take in numeric input in update loop
+	if (event.type == SDL_KEYDOWN)
 	{
-		if (bet > 0 && bet <= playerChips)
+		const char* key = SDL_GetKeyName(event.key.keysym.sym);
+		char k = key[strlen(key) - 1];
+
+		if (isdigit(k))
 		{
-			playerChips -= bet;
-			bettingPot += bet;
-
-			UpdateChips();
-
-			bet = 0;
-			betString = "";
-
-			t_betText->visible = false;
-			activeText.erase(remove(activeText.begin(), activeText.end(), t_betText), activeText.end());
-
-			DealCards();
+			betString += k;
+			bet = stoi(betString);
 		}
+
+		//Check for enter press
+		if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_RETURN2)
+		{
+			if (bet > 0 && bet <= playerChips)
+			{
+				playerChips -= bet;
+				bettingPot += bet;
+
+				UpdateChips();
+
+				bet = 0;
+				betString = "";
+
+				t_betText->visible = false;
+
+				DealCards();
+			}
+		}
+
 	}
 }
 
 void BlackjackGame::DealCards()
 {
+	cerr << "Player: ";
 	playerHands[0]->AddCard(deck.DrawCard());
-
-	PlayingCard card = deck.DrawCard();
-	card.hidden = true;
-
-	dealerHand->AddCard(card);
-
+	cerr << "Dealer: ";
+	dealerHand->AddCard(deck.DrawCard());
+	cerr << "Player: ";
 	playerHands[0]->AddCard(deck.DrawCard());
+	cerr << "Dealer: ";
 	dealerHand->AddCard(deck.DrawCard());
 
 	gameState = GameState::PlayersTurn;
@@ -323,11 +322,13 @@ void BlackjackGame::DealCards()
 	if (t_dealerCardValue == nullptr)
 	{
 		t_dealerCardValue = new TextRenderer(renderer);
+		activeText.push_back(t_dealerCardValue);
 	}
 
 	if (t_playerCardValue == nullptr)
 	{
 		t_playerCardValue = new TextRenderer(renderer);
+		activeText.push_back(t_playerCardValue);
 	}
 
 	UpdateText();
@@ -367,59 +368,88 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 	t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
 
 	//Get player input
+	if (event.type == SDL_KEYDOWN)
+	{
+		switch (event.key.keysym.sym)
+		{
+		case SDLK_h:
+			//Hit
+			cerr << "Player: ";
+
+			if (!playerHands[0]->stand)
+			{
+				playerHands[0]->AddCard(deck.DrawCard());
+			}
+			else {
+				playerHands[1]->AddCard(deck.DrawCard());
+			}
+
+			UpdateText();
+			return;
+			break;
+
+		case SDLK_s:
+			//Stand
+			if (!playerHands[0]->stand)
+			{
+				playerHands[0]->stand = true;
+			}
+			else {
+				playerHands[1]->stand = true;
+			}
+			return;
+			break;
+		case SDLK_d:
+			if (!playerSplitHand && playerHands[0]->GetNumCards() == 2)
+			{
+				//Double down
+				if (playerChips >= bettingPot)
+				{
+					playerChips -= bettingPot;
+					bettingPot *= 2;
+					UpdateChips();
+					playerHands[0]->AddCard(deck.DrawCard());
+					playerHands[0]->stand = true;
+				}
+			}
+
+			return;
+			break;
+
+		case SDLK_p:
+			if (playerHands[0]->GetCanSplit() && !playerSplitHand && playerChips >= bettingPot)
+			{
+				//Split
+				playerHands[0]->SplitHand(*playerHands[1]);
+				playerSplitHand = true;
+				playerChips -= bettingPot;
+				bettingPot *= 2;
+				playerHands[0]->AddCard(deck.DrawCard());
+				playerHands[1]->AddCard(deck.DrawCard());
+			}
+
+			return;
+			break;
+		}
+	}
+
 	if (keys[SDL_SCANCODE_H])
 	{
-		//Hit
-		if (!playerHands[0]->stand)
-		{
-			playerHands[0]->AddCard(deck.DrawCard());
-		}
-		else {
-			playerHands[1]->AddCard(deck.DrawCard());
-		}
+		
+
 		return;
 	}
 	else if (keys[SDL_SCANCODE_S])
 	{
-		//Stand
-		if (!playerHands[0]->stand)
-		{
-			playerHands[0]->stand = true;
-		}
-		else {
-			playerHands[1]->stand = true;
-		}
-		return;
+		
 	}
 	else if (keys[SDL_SCANCODE_D])
 	{
-		if (!playerSplitHand && playerHands[0]->GetNumCards() == 2)
-		{
-			//Double down
-			if (playerChips >= bettingPot)
-			{
-				playerChips -= bettingPot;
-				bettingPot *= 2;
-				UpdateChips();
-				playerHands[0]->AddCard(deck.DrawCard());
-				playerHands[0]->stand = true;
-				return;
-			}
-		}
+		
 	}
 	else if (keys[SDL_SCANCODE_P])
 	{
-		if (playerHands[0]->GetCanSplit() && !playerSplitHand && playerChips >= bettingPot)
-		{
-			//Split
-			playerHands[0]->SplitHand(*playerHands[1]);
-			playerSplitHand = true;
-			playerChips -= bettingPot;
-			bettingPot *= 2;
-			playerHands[0]->AddCard(deck.DrawCard());
-			playerHands[1]->AddCard(deck.DrawCard());
-			return;
-		}
+		
 	}
 }
 
@@ -432,13 +462,14 @@ void BlackjackGame::DealerTurn()
 		return;
 	}
 	
-	if (dealerHand->handValue > 17)
+	if (dealerHand->handValue > 17 || dealerHand->handValue > playerHands[0]->handValue)
 	{
 		dealerHand->stand = true;
 		return;
 	}
 
 	//Dealer hits
+	cerr << "Dealer: ";
 	dealerHand->AddCard(deck.DrawCard());
 }
 
@@ -492,6 +523,7 @@ void BlackjackGame::EndGame()
 
 	if (playerSplitHand)
 	{
+		winnings = 0;
 		handResult = CheckWin(1);
 
 		switch (handResult)
@@ -571,11 +603,11 @@ void BlackjackGame::UpdateChips()
 void BlackjackGame::UpdateText()
 {
 	string cardValue = to_string(dealerHand->handValue);
-	t_dealerCardValue->SetText(cardValue.c_str(), 100, 100, 20);
+	t_dealerCardValue->SetText(cardValue.c_str(), 140, 100, 20);
 	t_dealerCardValue->visible = true;
 
 	cardValue = to_string(playerHands[0]->handValue);
-	t_playerCardValue->SetText(cardValue.c_str(), 100, SCREENHEIGHT - 100, 20);
+	t_playerCardValue->SetText(cardValue.c_str(), 140, SCREENHEIGHT - 100, 20);
 	t_playerCardValue->visible = true;
 }
 
@@ -635,6 +667,31 @@ int BlackjackGame::CheckWin(int hand)
 
 				return 2;
 			}
+		}
+	}
+}
+
+void BlackjackGame::PollEvent()
+{
+	if (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			endGame = true;
+			break;
+
+		case SDL_KEYDOWN:
+
+			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+			{
+				endGame = true;
+			}
+
+			break;
+
+		default:
+			break;
 		}
 	}
 }

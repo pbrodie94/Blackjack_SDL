@@ -34,6 +34,7 @@ void BlackjackHand::AddCard(PlayingCard card)
 	numCards++;
 	
 	int cardNum = card.GetCardValue();
+	cerr << "Card: " << numCards << ": " << cardNum << endl;
 
 	switch (cardNum)
 	{
@@ -57,6 +58,8 @@ void BlackjackHand::AddCard(PlayingCard card)
 	case 13:
 
 		handValue += 10;
+
+		break;
 
 	default:
 
@@ -99,6 +102,8 @@ void BlackjackHand::AddCard(PlayingCard card)
 			stand = true;
 		}
 	}
+
+	cerr << "value: " << handValue << endl;
 
 	DisplayHand();
 }
@@ -166,4 +171,6 @@ void BlackjackHand::ResetHand()
 	}
 
 	cardSprites.clear();
+
+	cerr << "Hand was reset, hand value: " << handValue << endl;
 }
