@@ -34,7 +34,6 @@ void BlackjackHand::AddCard(PlayingCard card)
 	numCards++;
 	
 	int cardNum = card.GetCardValue();
-	cerr << "Card: " << numCards << ": " << cardNum << endl;
 
 	switch (cardNum)
 	{
@@ -103,8 +102,6 @@ void BlackjackHand::AddCard(PlayingCard card)
 		}
 	}
 
-	cerr << "value: " << handValue << endl;
-
 	DisplayHand();
 }
 
@@ -113,8 +110,13 @@ void BlackjackHand::SplitHand(BlackjackHand& otherHand)
 	if (!canSplit)
 		return;
 
-	otherHand.AddCard(cards.back());
-	cards.pop_back();
+	PlayingCard card = cards[1];
+	PlayingCard card2 = cards[0];
+
+	ResetHand();
+
+	AddCard(card);
+	otherHand.AddCard(card2);
 }
 
 void BlackjackHand::DisplayHand()
@@ -171,6 +173,4 @@ void BlackjackHand::ResetHand()
 	}
 
 	cardSprites.clear();
-
-	cerr << "Hand was reset, hand value: " << handValue << endl;
 }

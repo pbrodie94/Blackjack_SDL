@@ -27,10 +27,13 @@ private:
 	SDL_Texture* cardBackTexture;
 	SDL_Texture* dealerTexture;
 	TextRenderer* t_instructionsText;
+	TextRenderer* t_messageText;
+	TextRenderer* t_messageText2;
 	TextRenderer* t_playerChips;
 	TextRenderer* t_bettingPot;
 	TextRenderer* t_betText;
 	TextRenderer* t_playerCardValue;
+	TextRenderer* t_playerOtherCardValue;
 	TextRenderer* t_dealerCardValue;
 	Sprite* s_dealer;
 
@@ -73,6 +76,7 @@ private:
 	void PlayerTurn(const Uint8* keys);
 	void DealerTurn();
 	void EndGame();
+	void EndRound();
 	void GameOver(const Uint8* keys);
 
 	void UpdateChips();

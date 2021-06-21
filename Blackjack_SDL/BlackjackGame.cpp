@@ -180,7 +180,7 @@ void BlackjackGame::GameLoop()
 
 		case GameState::EndOfRound:
 
-			EndGame();
+			EndRound();
 
 			break;
 
@@ -301,6 +301,41 @@ void BlackjackGame::TakeBet(const Uint8* keys)
 
 				DealCards();
 			}
+			else {
+				if (bet > playerChips)
+				{
+					if (t_messageText == nullptr)
+					{
+						t_messageText = new TextRenderer(renderer);
+						activeText.push_back(t_messageText);
+					}
+
+					t_messageText->SetText("You don't have enough chips, please try again.", SCREENWIDTH / 2, SCREENHEIGHT / 2 - 30, 20);
+					t_messageText->SetXPosition(t_messageText->GetXPosition() - t_messageText->width / 2);
+					t_messageText->visible = true;
+
+					bet = 0;
+				}
+				else if (bet <= 0)
+				{
+					if (t_messageText == nullptr)
+					{
+						t_messageText = new TextRenderer(renderer);
+						activeText.push_back(t_messageText);
+					}
+
+					t_messageText->SetText("Bet must be greater than 0, please try again.", SCREENWIDTH / 2, SCREENHEIGHT / 2 - 30, 20);
+					t_messageText->SetXPosition(t_messageText->GetXPosition() - t_messageText->width / 2);
+					t_messageText->visible = true;
+
+					bet = 0;
+				}
+			}
+		}
+		else if (event.key.keysym.sym == SDLK_BACKSPACE)
+		{
+			bet = 0;
+			betString = "0";
 		}
 
 	}
@@ -308,13 +343,9 @@ void BlackjackGame::TakeBet(const Uint8* keys)
 
 void BlackjackGame::DealCards()
 {
-	cerr << "Player: ";
 	playerHands[0]->AddCard(deck.DrawCard());
-	cerr << "Dealer: ";
 	dealerHand->AddCard(deck.DrawCard());
-	cerr << "Player: ";
 	playerHands[0]->AddCard(deck.DrawCard());
-	cerr << "Dealer: ";
 	dealerHand->AddCard(deck.DrawCard());
 
 	gameState = GameState::PlayersTurn;
@@ -336,7 +367,7 @@ void BlackjackGame::DealCards()
 
 void BlackjackGame::PlayerTurn(const Uint8* keys)
 {
-	if (!playerSplitHand && playerHands[0]->GetIsBlackjack() || playerHands[0]->stand || playerHands[0]->GetIsBust())
+	if (!playerSplitHand && playerHands[0]->stand)
 	{
 		//Turn over
 		t_instructionsText->visible = false;
@@ -367,6 +398,29 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 	t_instructionsText->SetText(turnMessage.c_str(), SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
 	t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
 
+	if (playerSplitHand)
+	{
+		string handMessage = "";
+
+		if (!playerHands[0]->stand)
+		{
+			handMessage = "Playing hand one.";
+		}
+		else {
+			handMessage = "Playing hand two.";
+		}
+
+		if (t_messageText == nullptr)
+		{
+			t_messageText = new TextRenderer(renderer);
+			activeText.push_back(t_messageText);
+		}
+
+		t_messageText->SetText(handMessage.c_str(), SCREENWIDTH / 2, SCREENHEIGHT / 2 - 30, 20);
+		t_messageText->SetXPosition(t_messageText->GetXPosition() - t_messageText->width / 2);
+		t_messageText->visible = true;
+	}
+
 	//Get player input
 	if (event.type == SDL_KEYDOWN)
 	{
@@ -374,7 +428,6 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 		{
 		case SDLK_h:
 			//Hit
-			cerr << "Player: ";
 
 			if (!playerHands[0]->stand)
 			{
@@ -397,6 +450,12 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 			else {
 				playerHands[1]->stand = true;
 			}
+
+			if (t_messageText != nullptr)
+			{
+				t_messageText->visible = false;
+			}
+
 			return;
 			break;
 		case SDLK_d:
@@ -426,30 +485,12 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 				bettingPot *= 2;
 				playerHands[0]->AddCard(deck.DrawCard());
 				playerHands[1]->AddCard(deck.DrawCard());
+				UpdateText();
 			}
 
 			return;
 			break;
 		}
-	}
-
-	if (keys[SDL_SCANCODE_H])
-	{
-		
-
-		return;
-	}
-	else if (keys[SDL_SCANCODE_S])
-	{
-		
-	}
-	else if (keys[SDL_SCANCODE_D])
-	{
-		
-	}
-	else if (keys[SDL_SCANCODE_P])
-	{
-		
 	}
 }
 
@@ -458,7 +499,10 @@ void BlackjackGame::DealerTurn()
 	if (dealerHand->GetIsBlackjack() || dealerHand->stand || dealerHand->GetIsBust())
 	{
 		//Dealer turn over
+		EndGame();
+
 		gameState = GameState::EndOfRound;
+
 		return;
 	}
 	
@@ -469,7 +513,6 @@ void BlackjackGame::DealerTurn()
 	}
 
 	//Dealer hits
-	cerr << "Dealer: ";
 	dealerHand->AddCard(deck.DrawCard());
 }
 
@@ -479,6 +522,8 @@ void BlackjackGame::EndGame()
 	int winnings = 0;
 	int handResult = CheckWin(0);
 	int playerBet = bettingPot;
+
+	string message = "";
 
 	if (playerSplitHand)
 	{
@@ -491,6 +536,13 @@ void BlackjackGame::EndGame()
 		//Lose
 		//Display house wins
 
+		if (playerHands[0]->handValue > 21)
+		{
+			message = "Bust! ";
+		} 
+
+		message += "House wins.";
+
 		break;
 
 	case 1:
@@ -498,6 +550,8 @@ void BlackjackGame::EndGame()
 		//display push, bet returned
 		
 		playerChips += playerBet;
+
+		message = "Push, bet returned.";
 
 		break;
 
@@ -507,6 +561,8 @@ void BlackjackGame::EndGame()
 
 		winnings = playerBet * 2;
 		playerChips += winnings;
+
+		message = "Win! " + to_string(winnings) + " chips.";
 
 		break;
 
@@ -518,8 +574,20 @@ void BlackjackGame::EndGame()
 		winnings = playerBet + (playerBet * 1.5);
 		playerChips += winnings;
 
+		message = "Blackjack! " + to_string(winnings) + " chips won.";
+
 		break;
 	}
+
+	if (t_messageText == nullptr)
+	{
+		t_messageText = new TextRenderer(renderer);
+		activeText.push_back(t_messageText);
+	}
+
+	t_messageText->SetText(message.c_str(), SCREENWIDTH / 2, SCREENHEIGHT / 2 - 30, 20);
+	t_messageText->SetXPosition(t_messageText->GetXPosition() - t_messageText->width / 2);
+	t_messageText->visible = true;
 
 	if (playerSplitHand)
 	{
@@ -532,6 +600,15 @@ void BlackjackGame::EndGame()
 			//Lose
 			//Display house wins
 
+			message = "";
+
+			if (playerHands[1]->handValue > 21)
+			{
+				message = "Bust! ";
+			}
+
+			message += "House wins.";
+
 			break;
 
 		case 1:
@@ -539,6 +616,8 @@ void BlackjackGame::EndGame()
 			//display push, bet returned
 
 			playerChips += playerBet;
+
+			message = "Push, bet returned.";
 
 			break;
 
@@ -548,6 +627,8 @@ void BlackjackGame::EndGame()
 
 			winnings = playerBet * 2;
 			playerChips += winnings;
+
+			message = "Win! " + to_string(winnings) + " chips.";
 
 			break;
 
@@ -559,23 +640,69 @@ void BlackjackGame::EndGame()
 			winnings = playerBet + (playerBet * 1.5);
 			playerChips += winnings;
 
+			message = "Blackjack! " + to_string(winnings) + " chips won.";
+
 			break;
 		}
+
+		if (t_messageText2 == nullptr)
+		{
+			t_messageText2 = new TextRenderer(renderer);
+			activeText.push_back(t_messageText2);
+		}
+
+		t_messageText2->SetText(message.c_str(), SCREENWIDTH / 2, SCREENHEIGHT / 2, 20);
+		t_messageText2->SetXPosition(t_messageText->GetXPosition() - t_messageText->width / 2);
+		t_messageText2->visible = true;
 	}
 
 	bettingPot = 0;
 	UpdateChips();
 
-	t_playerCardValue->visible = false;
-	t_dealerCardValue->visible = false;
+	t_instructionsText->SetText("Press Space to Continue.", SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
+	t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
+	t_instructionsText->visible = true;
+}
 
-	if (playerChips > 0)
+void BlackjackGame::EndRound()
+{
+	if (event.type == SDL_KEYDOWN)
 	{
-		StartRound();
-		return;
-	}
+		if (event.key.keysym.sym == SDLK_SPACE)
+		{
+			//Continue
+			t_playerCardValue->visible = false;
+			if (t_playerOtherCardValue != nullptr)
+			{
+				t_playerOtherCardValue->visible = false;
+			}
+			t_dealerCardValue->visible = false;
+			if (t_messageText2 != nullptr)
+			{
+				t_messageText2->visible = false;
+			}
 
-	gameState = GameState::GameIsOver;
+			if (playerChips > 0)
+			{
+				//Continue
+				t_messageText->visible = false;
+				StartRound();
+
+				return;
+			}
+
+			//Game over
+			t_messageText->SetText("Game Over.", SCREENWIDTH / 2, SCREENHEIGHT / 2, 20);
+			t_messageText->SetXPosition(t_messageText->GetXPosition() - t_messageText->width / 2);
+			t_messageText->visible = true;
+
+			t_instructionsText->SetText("Press Space to Continue.", SCREENWIDTH / 2, SCREENHEIGHT - 50, 20);
+			t_instructionsText->SetXPosition(t_instructionsText->GetXPosition() - t_instructionsText->width / 2);
+			t_instructionsText->visible = true;
+
+			gameState = GameState::GameIsOver;
+		}
+	}
 }
 
 void BlackjackGame::GameOver(const Uint8* keys)
@@ -583,9 +710,12 @@ void BlackjackGame::GameOver(const Uint8* keys)
 	//Display game over 
 
 	//Press space to play again or 
-	if (keys[SDL_SCANCODE_SPACE])
+	if (event.type == SDL_KEYDOWN)
 	{
-		StartGame();
+		if (event.key.keysym.sym == SDLK_SPACE)
+		{
+			StartGame();
+		}
 	}
 }
 
@@ -609,6 +739,20 @@ void BlackjackGame::UpdateText()
 	cardValue = to_string(playerHands[0]->handValue);
 	t_playerCardValue->SetText(cardValue.c_str(), 140, SCREENHEIGHT - 100, 20);
 	t_playerCardValue->visible = true;
+
+	if (playerSplitHand && playerHands[1]->GetNumCards() > 1)
+	{
+		cardValue = to_string(playerHands[1]->handValue);
+
+		if (t_playerOtherCardValue == nullptr)
+		{
+			t_playerOtherCardValue = new TextRenderer(renderer);
+			activeText.push_back(t_playerOtherCardValue);
+		}
+
+		t_playerOtherCardValue->SetText(cardValue.c_str(), 140, t_playerCardValue->GetYPosition() - 20, 20);
+		t_playerOtherCardValue->visible = true;
+	}
 }
 
 void BlackjackGame::DrawElements()

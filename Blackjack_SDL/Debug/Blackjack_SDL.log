@@ -1,4 +1,19 @@
-﻿  BlackjackHand.cpp
+﻿  BlackjackGame.cpp
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(30,18): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(31,20): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(32,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(33,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(34,22): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(574,24): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(640,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(762,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(773,21): warning C4018: '<': signed/unsigned mismatch
+  BlackjackHand.cpp
 C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(23,17): warning C4150: deletion of pointer to incomplete type 'SDL_Renderer'; no destructor called
 C:\SDL2-2.0.12\include\SDL_render.h(132): message : see declaration of 'SDL_Renderer'
 C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(24,20): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
@@ -7,6 +22,8 @@ C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamen
 C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
 C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(26,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
 C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(146,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(167,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(148,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackHand.cpp(169,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(816): warning C4715: 'BlackjackGame::CheckWin': not all control paths return a value
   Blackjack_SDL.vcxproj -> C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Debug\Blackjack_SDL.exe
