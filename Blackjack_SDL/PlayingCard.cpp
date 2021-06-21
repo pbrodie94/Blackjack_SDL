@@ -10,4 +10,5 @@ PlayingCard::PlayingCard(int num, int suit)
 {
 	this->cardNumber = num;
 	this->cardSuit = suit;
+	this->hidden = false;
 }

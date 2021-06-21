@@ -7,9 +7,9 @@ class Sprite
 private:
 	void Load(const char* fileName);
 
-	SDL_Renderer* renderer;
 
 protected:
+	SDL_Renderer* renderer;
 	SDL_Texture* image;
 	SDL_Rect rect;
 
@@ -30,6 +30,7 @@ public:
 	void SetHeight(int height);
 	void SetXPosition(int x);
 	void SetYPosition(int y);
+	void SetTexture(SDL_Texture* texture);
 
 	SDL_Texture* GetImage();
 

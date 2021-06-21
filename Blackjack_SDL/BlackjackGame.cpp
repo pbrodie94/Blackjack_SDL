@@ -124,13 +124,14 @@ void BlackjackGame::LoadResources()
 	activeText.push_back(t_instructionsText);
 
 	s_dealer = new Sprite(dealerTexture, SCREENWIDTH / 2, 50, renderer);
-	s_dealer->SetWidth(69);
-	s_dealer->SetHeight(76);
+	s_dealer->SetWidth(138);
+	s_dealer->SetHeight(152);
+	s_dealer->SetFrame(0);
 	s_dealer->SetXPosition(s_dealer->GetXPosition() - s_dealer->GetWidth() / 2);
-	//s_dealer->visible = false;
+	s_dealer->visible = false;
 
-	playerHands[0] = new BlackjackHand(SCREENWIDTH - 100, SCREENHEIGHT - 100, renderer, cardTexture, cardBackTexture, cardFaceTexture);
-	playerHands[1] = new BlackjackHand(SCREENWIDTH - 100, SCREENHEIGHT - 130, renderer, cardTexture, cardBackTexture, cardFaceTexture);
+	playerHands[0] = new BlackjackHand(SCREENWIDTH - 100, SCREENHEIGHT - 120, renderer, cardTexture, cardBackTexture, cardFaceTexture);
+	playerHands[1] = new BlackjackHand(SCREENWIDTH - 100, SCREENHEIGHT - 200, renderer, cardTexture, cardBackTexture, cardFaceTexture);
 	dealerHand = new BlackjackHand(SCREENWIDTH - 100, 150, renderer, cardTexture, cardBackTexture, cardFaceTexture);
 
 	activeHands.push_back(playerHands[0]);
@@ -208,6 +209,7 @@ void BlackjackGame::MainMenu(const Uint8* keys)
 {
 	if (keys[SDL_SCANCODE_SPACE])
 	{
+		s_dealer->visible = true;
 		StartGame();
 	}
 }
@@ -346,7 +348,9 @@ void BlackjackGame::DealCards()
 	playerHands[0]->AddCard(deck.DrawCard());
 	dealerHand->AddCard(deck.DrawCard());
 	playerHands[0]->AddCard(deck.DrawCard());
-	dealerHand->AddCard(deck.DrawCard());
+	PlayingCard card = deck.DrawCard();
+	card.hidden = true;
+	dealerHand->AddCard(card);
 
 	gameState = GameState::PlayersTurn;
 
@@ -371,11 +375,13 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 	{
 		//Turn over
 		t_instructionsText->visible = false;
+		dealerHand->UnHideCards();
 		gameState = GameState::DealersTurn;
 		return;
 	}
 	else if (playerSplitHand && playerHands[0]->stand && playerHands[1]->stand) {
 		t_instructionsText->visible = false;
+		dealerHand->UnHideCards();
 		gameState = GameState::DealersTurn;
 		return;
 	}
@@ -506,7 +512,35 @@ void BlackjackGame::DealerTurn()
 		return;
 	}
 	
-	if (dealerHand->handValue > 17 || dealerHand->handValue > playerHands[0]->handValue)
+	int topPlayerValue = 0;
+
+	if (!playerSplitHand)
+	{
+		topPlayerValue = playerHands[0]->handValue;
+	}
+	else {
+		if (playerHands[0]->handValue > playerHands[1]->handValue)
+		{
+			if (playerHands[0]->handValue > 21)
+			{
+				topPlayerValue = playerHands[1]->handValue;
+			}
+			else {
+				topPlayerValue = playerHands[0]->handValue;
+			}
+		}
+		else {
+			if (playerHands[1]->handValue > 21)
+			{
+				topPlayerValue = playerHands[0]->handValue;
+			}
+			else {
+				topPlayerValue = playerHands[1]->handValue;
+			}
+		}
+	}
+
+	if (topPlayerValue > 21 || (topPlayerValue <= 21 && dealerHand->handValue > topPlayerValue))
 	{
 		dealerHand->stand = true;
 		return;
@@ -514,6 +548,7 @@ void BlackjackGame::DealerTurn()
 
 	//Dealer hits
 	dealerHand->AddCard(deck.DrawCard());
+	UpdateText();
 }
 
 void BlackjackGame::EndGame()

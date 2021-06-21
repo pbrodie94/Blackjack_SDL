@@ -105,6 +105,17 @@ void BlackjackHand::AddCard(PlayingCard card)
 	DisplayHand();
 }
 
+void BlackjackHand::UnHideCards()
+{
+	for (int i = 0; i < cardSprites.size(); i++)
+	{
+		if (cardSprites[i]->hidden)
+		{
+			cardSprites[i]->UnHide(cardTexture, cardFaceTexture, cards[i].GetCardValue(), cards[i].GetCardSuit());
+		}
+	}
+}
+
 void BlackjackHand::SplitHand(BlackjackHand& otherHand)
 {
 	if (!canSplit)
@@ -125,19 +136,17 @@ void BlackjackHand::DisplayHand()
 		return;
 
 	//Access the cards in hand and draw them to screen with the cardsprite objects
-	int offset = 10 * numCards - 1;
+	int offset = 20 * numCards - 1;
 
 	if (!cards[numCards - 1].hidden)
 	{
-		cardSprites.push_back(new CardSprite(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos + offset, startYPos, cardTexture, cardFaceTexture, renderer));
+		cardSprites.push_back(new CardSprite(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos - offset, startYPos, cardTexture, cardFaceTexture, renderer));
 	}
 	else {
-		cardSprites.push_back(new CardSprite(startXPos + offset, startYPos, cardBackTexture, renderer));
+		cardSprites.push_back(new CardSprite(startXPos - offset, startYPos, cardBackTexture, renderer));
 	}
 
 	//cardSprites.push_back(newSprite);
-	
-
 }
 
 void BlackjackHand::DrawHand()
@@ -173,4 +182,5 @@ void BlackjackHand::ResetHand()
 	}
 
 	cardSprites.clear();
+	cerr << cardSprites.size() << endl;
 }

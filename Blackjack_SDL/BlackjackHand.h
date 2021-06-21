@@ -35,6 +35,7 @@ public:
 
 	void AddCard(PlayingCard card);
 	void SplitHand(BlackjackHand& otherHand);
+	void UnHideCards();
 	void DrawHand();
 	void ResetHand();
 

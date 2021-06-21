@@ -4,11 +4,11 @@ Sprite::Sprite(SDL_Texture* texture, int xPos, int yPos, SDL_Renderer* renderer)
 {
 	this->renderer = renderer;
 
-	xPosition = 0;
-	yPosition = 0;
+	xPosition = xPos;
+	yPosition = yPos;
 	
-	rect.x = xPos;
-	rect.y = yPos;
+	rect.x = 0;
+	rect.y = 0;
 
 	visible = true;
 	
@@ -64,6 +64,11 @@ void Sprite::SetXPosition(int x)
 void Sprite::SetYPosition(int y)
 {
 	this->yPosition = y;
+}
+
+void Sprite::SetTexture(SDL_Texture* texture)
+{
+	image = texture;
 }
 
 Uint16 Sprite::GetCurrentFrame()
