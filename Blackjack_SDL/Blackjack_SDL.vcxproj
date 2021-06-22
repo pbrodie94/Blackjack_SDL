@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BlackjackGame.cpp" />
     <ClCompile Include="BlackjackHand.cpp" />
     <ClCompile Include="CardDeck.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="BlackjackGame.h" />
     <ClInclude Include="BlackjackHand.h" />
     <ClInclude Include="CardDeck.h" />

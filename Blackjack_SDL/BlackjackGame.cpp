@@ -15,6 +15,11 @@ BlackjackGame::BlackjackGame()
 	this->bet = 0;
 	this->playerSplitHand = false;
 
+	this->audioRate = 22050;
+	this->audioChannels = 2;
+	this->audioBuffers = 640;
+	this->audioFormat = AUDIO_S16SYS;
+
 	gameState = GameState::Menu;
 
 	Initialize();
@@ -27,31 +32,19 @@ BlackjackGame::~BlackjackGame()
 	delete t_playerChips;
 	delete t_playerCardValue;
 	delete t_dealerCardValue;
-	delete bgTexture;
-	delete cardTexture;
-	delete cardFaceTexture;
-	delete cardBackTexture;
-	delete dealerTexture;
+	SDL_DestroyTexture(bgTexture);
+	SDL_DestroyTexture(cardTexture);
+	SDL_DestroyTexture(cardFaceTexture);
+	SDL_DestroyTexture(cardBackTexture);
+	SDL_DestroyTexture(dealerTexture);
 	delete s_dealer;
 
 	delete playerHands[0];
 	delete playerHands[1];
 	delete dealerHand;
 
-	/*for (int i = 0; i < activeHands.size(); i++)
-	{
-		delete (activeHands[i]);
-		activeHands[i] = nullptr;
-	}
-
-	for (int i = 0; i < activeText.size(); i++)
-	{
-		delete (activeText[i]);
-		activeText[i] = nullptr;
-	}
-
 	activeHands.clear();
-	activeText.clear();*/
+	activeText.clear();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -59,7 +52,7 @@ BlackjackGame::~BlackjackGame()
 
 void BlackjackGame::Initialize()
 {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
 	{
 		cerr << "Unable to initialize SDL -> " << SDL_GetError() << endl;
 		throw 1;
@@ -78,6 +71,12 @@ void BlackjackGame::Initialize()
 	if (!renderer)
 	{
 		cerr << "SDL_CreateRenderer Error -> " << SDL_GetError() << endl;
+		throw 1;
+	}
+
+	if (Mix_OpenAudio(audioRate, audioFormat, audioChannels, audioBuffers) != 0)
+	{
+		cerr << "Failed to open audio " << SDL_GetError() << endl;
 		throw 1;
 	}
 
@@ -116,6 +115,15 @@ void BlackjackGame::LoadResources()
 	if (!dealerTexture)
 	{
 		cerr << "Could not load Dealer Texture." << endl;
+	}
+
+	this->music = Mix_LoadMUS("Audio/SBTS.mp3");
+	if (this->music == nullptr)
+	{
+		cerr << "Failed to load music." << endl;
+	}
+	else {
+		Mix_PlayMusic(this->music, -1);
 	}
 
 	this->t_instructionsText = new TextRenderer(renderer);
