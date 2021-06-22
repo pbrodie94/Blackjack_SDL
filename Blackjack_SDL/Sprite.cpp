@@ -7,8 +7,7 @@ Sprite::Sprite(SDL_Texture* texture, int xPos, int yPos, SDL_Renderer* renderer)
 	xPosition = xPos;
 	yPosition = yPos;
 	
-	rect.x = 0;
-	rect.y = 0;
+	rect = { 0, 0, 0, 0 };
 
 	visible = true;
 	

@@ -1,6 +1,6 @@
 #include "CardSprite.h"
 
-CardSprite::CardSprite(int xPos, int yPos, SDL_Texture* texture, SDL_Renderer* renderer)
+/*CardSprite::CardSprite(int xPos, int yPos, SDL_Texture* texture, SDL_Renderer* renderer)
 	: Sprite(texture, xPos, yPos, renderer) 
 {
 	this->SetWidth(width);
@@ -33,6 +33,54 @@ CardSprite::CardSprite(int num, int suit, int xPos, int yPos, SDL_Texture* textu
 
 	//Set the card to be the inputted value
 	InitFaceSprites(cardFace, num, suit);
+}*/
+
+CardSprite::CardSprite(SDL_Texture* card, SDL_Texture* cardFace, SDL_Texture* cardBack, SDL_Renderer* renderer)
+	: Sprite(card, 0, 0, renderer)
+{
+	this->SetWidth(width);
+	this->SetHeight(height);
+	this->SetRectWidth(width);
+	this->SetRectHeight(height);
+
+	this->card = card;
+	this->cardFace = cardFace;
+	this->cardBack = cardBack;
+
+	cardNumber = new Sprite(cardFace, 0, 0, renderer);
+	cardNumber2 = new Sprite(cardFace, 0, 0, renderer);
+	cardSuit = new Sprite(cardFace, 0, 0, renderer);
+	cardSuit2 = new Sprite(cardFace, 0, 0, renderer);
+
+	cardNumber->SetWidth(6);
+	cardNumber->SetHeight(6);
+	cardSuit->SetWidth(6);
+	cardSuit->SetHeight(6);
+	cardNumber2->SetWidth(6);
+	cardNumber2->SetHeight(6);
+	cardSuit2->SetWidth(6);
+	cardSuit2->SetHeight(6);
+
+	cardNumber->SetRectWidth(nsSize);
+	cardNumber->SetRectHeight(nsSize);
+	cardSuit->SetRectWidth(nsSize);
+	cardSuit->SetRectHeight(nsSize);
+	cardNumber2->SetRectWidth(nsSize);
+	cardNumber2->SetRectHeight(nsSize);
+	cardSuit2->SetRectWidth(nsSize);
+	cardSuit2->SetRectHeight(nsSize);
+
+	cardNumer1Pos.x = width - nsSize;
+	cardNumer1Pos.y = nsSize;
+
+	cardSuit1Pos.x = width - nsSize;
+	cardSuit1Pos.y = nsSize * 2;
+
+	cardNumer2Pos.x = nsSize;
+	cardNumer2Pos.y = height - nsSize;
+
+	cardSuit2Pos.x = nsSize * 2;
+	cardSuit2Pos.y = height - nsSize;
 }
 
 CardSprite::~CardSprite()
@@ -58,87 +106,66 @@ CardSprite::~CardSprite()
 	}
 }
 
-void CardSprite::InitFacePositions(int xy)
+void CardSprite::SetCard(int num, int suit, int x, int y, bool hidden)
 {
-	cardNumer1Pos.x = width - xy;
-	cardNumer1Pos.y = xy;
-
-	cardSuit1Pos.x = width - xy;
-	cardSuit1Pos.y = xy * 2;
-
-	cardNumer2Pos.x = xy;
-	cardNumer2Pos.y = height - xy;
-
-	cardSuit2Pos.x = xy * 2;
-	cardSuit2Pos.y = height - xy;
-}
-
-void CardSprite::UnHide(SDL_Texture* card, SDL_Texture* cardFace, int num, int suit)
-{
-	SetTexture(card);
-	InitFaceSprites(cardFace, num, suit);
-
-	hidden = false;
-}
-
-void CardSprite::InitFaceSprites(SDL_Texture* cardFace, int num, int suit)
-{
-	int xy = 12;
-	InitFacePositions(xy);
-
-	cardNumber = new Sprite(cardFace, this->xPosition + cardNumer1Pos.x, this->yPosition + cardNumer1Pos.y, renderer);
-	cardNumber2 = new Sprite(cardFace, this->xPosition + cardNumer2Pos.x, this->yPosition + cardNumer2Pos.y, renderer);
-	cardSuit = new Sprite(cardFace, this->xPosition + cardSuit1Pos.x, this->yPosition + cardSuit1Pos.y, renderer);
-	cardSuit2 = new Sprite(cardFace, this->xPosition + cardSuit2Pos.x, this->yPosition + cardSuit2Pos.y, renderer);
-
-	cardNumber->SetWidth(6);
-	cardNumber->SetHeight(6);
-	cardSuit->SetWidth(6);
-	cardSuit->SetHeight(6);
-	cardNumber2->SetWidth(6);
-	cardNumber2->SetHeight(6);
-	cardSuit2->SetWidth(6);
-	cardSuit2->SetHeight(6);
-
-	cardNumber->SetRectWidth(xy);
-	cardNumber->SetRectHeight(xy);
-	cardSuit->SetRectWidth(xy);
-	cardSuit->SetRectHeight(xy);
-	cardNumber2->SetRectWidth(xy);
-	cardNumber2->SetRectHeight(xy);
-	cardSuit2->SetRectWidth(xy);
-	cardSuit2->SetRectHeight(xy);
-
-	if (suit > 2)
+	this->visible = true;
+	cardNumber->visible = hidden;
+	cardNumber2->visible = hidden;
+	cardSuit->visible = hidden;
+	cardSuit2->visible = hidden;
+	this->SetXPosition(x);
+	this->SetYPosition(y);
+	
+	//Set card number and suit
+	if (!hidden)
 	{
-		//Red card
-		cardNumber->SetRow(1);
-		cardNumber2->SetRow(1);
-		cardSuit->SetRow(1);
-		cardSuit->SetRow(1);
+		this->SetTexture(card);
+
+		if (suit > 2)
+		{
+			//Red card
+			cardNumber->SetRow(1);
+			cardNumber2->SetRow(1);
+			cardSuit->SetRow(1);
+			cardSuit->SetRow(1);
+		}
+		else {
+			//Black card
+			cardNumber->SetRow(0);
+			cardNumber2->SetRow(0);
+			cardSuit->SetRow(0);
+			cardSuit->SetRow(0);
+		}
+
+		cardNumber->SetFrame(num - 1);
+		cardNumber2->SetFrame(num - 1);
+
+		cardSuit->SetFrame(suit + 13);
+		cardSuit2->SetFrame(suit + 13);
 	}
 	else {
-		//Black card
-		cardNumber->SetRow(0);
-		cardNumber2->SetRow(0);
-		cardSuit->SetRow(0);
-		cardSuit->SetRow(0);
+		this->SetTexture(cardBack);
 	}
+}
 
-	cardNumber->SetFrame(num - 1);
-	cardNumber2->SetFrame(num - 1);
-
-	cardSuit->SetFrame(suit + 13);
-	cardSuit2->SetFrame(suit + 13);
+void CardSprite::UnHide(int num, int suit)
+{
+	hidden = false;
+	SetCard(num, suit, this->xPosition, this->yPosition, hidden);
 }
 
 void CardSprite::Draw()
 {
-	Sprite::Draw();
-
-	if (!hidden)
+	if (visible)
 	{
-		cardSuit->Draw();
-		cardNumber->Draw();
+		Sprite::Draw();
+
+		if (!hidden)
+		{
+			cardSuit->Draw();
+			cardSuit2->Draw();
+			cardNumber->Draw();
+			cardNumber2->Draw();
+		}
 	}
 }

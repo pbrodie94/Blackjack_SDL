@@ -110,7 +110,7 @@ void BlackjackHand::UnHideCards()
 	{
 		if (cardSprites[i]->hidden)
 		{
-			cardSprites[i]->UnHide(cardTexture, cardFaceTexture, cards[i].GetCardValue(), cards[i].GetCardSuit());
+			cardSprites[i]->UnHide(cards[i].GetCardValue(), cards[i].GetCardSuit());
 		}
 	}
 }
@@ -137,13 +137,20 @@ void BlackjackHand::DisplayHand()
 	//Access the cards in hand and draw them to screen with the cardsprite objects
 	int offset = 20 * numCards - 1;
 
-	if (!cards[numCards - 1].hidden)
+	/*if (!cards[numCards - 1].hidden)
 	{
 		cardSprites.push_back(new CardSprite(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos - offset, startYPos, cardTexture, cardFaceTexture, renderer));
 	}
 	else {
 		cardSprites.push_back(new CardSprite(startXPos - offset, startYPos, cardBackTexture, renderer));
+	}*/
+
+	if (cardSprites.size() < numCards)
+	{
+		cardSprites.push_back(new CardSprite(cardTexture, cardFaceTexture, cardBackTexture, renderer));
 	}
+
+	cardSprites[numCards - 1]->SetCard(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos - offset, startYPos, cards[numCards - 1].hidden);
 }
 
 void BlackjackHand::DrawHand()
@@ -172,11 +179,8 @@ void BlackjackHand::ResetHand()
 	cards.clear();
 
 	//delete the pointers
-	for (CardSprite* cs : cardSprites)
+	for (int i = 0; i < cardSprites.size(); i++)
 	{
-		delete (cs);
-		cs = nullptr;
+		cardSprites[i]->visible = false;
 	}
-
-	cardSprites.clear();
 }
