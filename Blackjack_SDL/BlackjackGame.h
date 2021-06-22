@@ -6,6 +6,7 @@
 #include "Definitions.h"
 #include "CardDeck.h"
 #include "BlackjackHand.h"
+#include "AudioManager.h"
 
 using namespace std;
 
@@ -41,6 +42,13 @@ private:
 
 	Uint32 deltaT;
 	Uint32 updatedTime;
+
+	int audioRate;
+	int audioChannels;
+	int audioBuffers;
+	Uint16 audioFormat;
+
+	Mix_Music* music;
 
 	int playerChips;
 	int bettingPot;
