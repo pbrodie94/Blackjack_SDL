@@ -20,10 +20,9 @@ BlackjackHand::BlackjackHand(int xPos, int yPos, SDL_Renderer* renderer, SDL_Tex
 
 BlackjackHand::~BlackjackHand()
 {
-	delete renderer;
-	delete cardTexture;
-	delete cardFaceTexture;
-	delete cardBackTexture;
+	SDL_DestroyTexture(cardTexture);
+	SDL_DestroyTexture(cardFaceTexture);
+	SDL_DestroyTexture(cardBackTexture);
 
 	ResetHand();
 }
@@ -145,8 +144,6 @@ void BlackjackHand::DisplayHand()
 	else {
 		cardSprites.push_back(new CardSprite(startXPos - offset, startYPos, cardBackTexture, renderer));
 	}
-
-	//cardSprites.push_back(newSprite);
 }
 
 void BlackjackHand::DrawHand()
@@ -175,12 +172,11 @@ void BlackjackHand::ResetHand()
 	cards.clear();
 
 	//delete the pointers
-	for (int i = 0; i < cardSprites.size(); i++)
+	for (CardSprite* cs : cardSprites)
 	{
-		delete (cardSprites[i]);
-		cardSprites[i] = nullptr;
+		delete (cs);
+		cs = nullptr;
 	}
 
 	cardSprites.clear();
-	cerr << cardSprites.size() << endl;
 }

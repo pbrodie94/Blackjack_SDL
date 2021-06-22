@@ -24,7 +24,8 @@ void Sprite::Draw()
 {
 	if (this->visible)
 	{
-		SDL_Rect dest = { xPosition, yPosition, rect.w, rect.h };
+		//SDL_Rect dest = { xPosition, yPosition, rect.w, rect.h };
+		SDL_Rect dest = { xPosition, yPosition, width, height};
 
 		SDL_RenderCopy(renderer, image, &rect, &dest);
 	}
@@ -54,6 +55,16 @@ void Sprite::SetWidth(int width)
 void Sprite::SetHeight(int height)
 {
 	this->rect.h = height;
+}
+
+void Sprite::SetRectWidth(int width)
+{
+	this->width = width;
+}
+
+void Sprite::SetRectHeight(int height)
+{
+	this->height = height;
 }
 
 void Sprite::SetXPosition(int x)

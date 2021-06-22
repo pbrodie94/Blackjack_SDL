@@ -5,10 +5,10 @@ CardSprite::CardSprite(int xPos, int yPos, SDL_Texture* texture, SDL_Renderer* r
 {
 	this->SetWidth(width);
 	this->SetHeight(height);
+	this->SetRectWidth(width);
+	this->SetRectHeight(height);
 
 	hidden = true;
-
-	InitFacePositions();
 }
 
 CardSprite::CardSprite(int xPos, int yPos, SDL_Texture* texture, SDL_Texture* cardFace, SDL_Renderer* renderer)
@@ -16,10 +16,11 @@ CardSprite::CardSprite(int xPos, int yPos, SDL_Texture* texture, SDL_Texture* ca
 {
 	this->SetWidth(width);
 	this->SetHeight(height);
+	this->SetRectWidth(width);
+	this->SetRectHeight(height);
 
 	//Set the card to be the inputted value
-	InitFacePositions();
-	InitFaceSprites(cardFace, 1, 1);
+	InitFaceSprites(cardFace, 1, 4);
 }
 
 CardSprite::CardSprite(int num, int suit, int xPos, int yPos, SDL_Texture* texture, SDL_Texture* cardFace, SDL_Renderer* renderer)
@@ -27,9 +28,10 @@ CardSprite::CardSprite(int num, int suit, int xPos, int yPos, SDL_Texture* textu
 {
 	this->SetWidth(width);
 	this->SetHeight(height);
+	this->SetRectWidth(width);
+	this->SetRectHeight(height);
 
 	//Set the card to be the inputted value
-	InitFacePositions();
 	InitFaceSprites(cardFace, num, suit);
 }
 
@@ -56,19 +58,19 @@ CardSprite::~CardSprite()
 	}
 }
 
-void CardSprite::InitFacePositions()
+void CardSprite::InitFacePositions(int xy)
 {
-	cardNumer1Pos.x = width - 5;
-	cardNumer1Pos.y = 5;
+	cardNumer1Pos.x = width - xy;
+	cardNumer1Pos.y = xy;
 
-	cardSuit1Pos.x = width - 5;
-	cardSuit1Pos.y = 25;
+	cardSuit1Pos.x = width - xy;
+	cardSuit1Pos.y = xy * 2;
 
-	cardNumer2Pos.x = 5;
-	cardNumer2Pos.y = height - 7;
+	cardNumer2Pos.x = xy;
+	cardNumer2Pos.y = height - xy;
 
-	cardSuit2Pos.x = 25;
-	cardSuit2Pos.y = height - 7;
+	cardSuit2Pos.x = xy * 2;
+	cardSuit2Pos.y = height - xy;
 }
 
 void CardSprite::UnHide(SDL_Texture* card, SDL_Texture* cardFace, int num, int suit)
@@ -77,26 +79,35 @@ void CardSprite::UnHide(SDL_Texture* card, SDL_Texture* cardFace, int num, int s
 	InitFaceSprites(cardFace, num, suit);
 
 	hidden = false;
-
 }
 
 void CardSprite::InitFaceSprites(SDL_Texture* cardFace, int num, int suit)
 {
+	int xy = 12;
+	InitFacePositions(xy);
+
 	cardNumber = new Sprite(cardFace, this->xPosition + cardNumer1Pos.x, this->yPosition + cardNumer1Pos.y, renderer);
 	cardNumber2 = new Sprite(cardFace, this->xPosition + cardNumer2Pos.x, this->yPosition + cardNumer2Pos.y, renderer);
 	cardSuit = new Sprite(cardFace, this->xPosition + cardSuit1Pos.x, this->yPosition + cardSuit1Pos.y, renderer);
 	cardSuit2 = new Sprite(cardFace, this->xPosition + cardSuit2Pos.x, this->yPosition + cardSuit2Pos.y, renderer);
 
-	int xy = 12;
+	cardNumber->SetWidth(6);
+	cardNumber->SetHeight(6);
+	cardSuit->SetWidth(6);
+	cardSuit->SetHeight(6);
+	cardNumber2->SetWidth(6);
+	cardNumber2->SetHeight(6);
+	cardSuit2->SetWidth(6);
+	cardSuit2->SetHeight(6);
 
-	cardNumber->SetWidth(xy);
-	cardNumber->SetHeight(xy);
-	cardSuit->SetWidth(xy);
-	cardSuit->SetHeight(xy);
-	cardNumber2->SetWidth(xy);
-	cardNumber2->SetHeight(xy);
-	cardSuit2->SetWidth(xy);
-	cardSuit2->SetHeight(xy);
+	cardNumber->SetRectWidth(xy);
+	cardNumber->SetRectHeight(xy);
+	cardSuit->SetRectWidth(xy);
+	cardSuit->SetRectHeight(xy);
+	cardNumber2->SetRectWidth(xy);
+	cardNumber2->SetRectHeight(xy);
+	cardSuit2->SetRectWidth(xy);
+	cardSuit2->SetRectHeight(xy);
 
 	if (suit > 2)
 	{

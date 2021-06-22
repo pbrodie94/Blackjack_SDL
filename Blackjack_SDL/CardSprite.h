@@ -23,7 +23,7 @@ private:
 	Vector2 cardSuit1Pos;
 	Vector2 cardSuit2Pos;
 
-	void InitFacePositions();
+	void InitFacePositions(int xy);
 	void InitFaceSprites(SDL_Texture* cardFace, int num, int suit);
 
 public:

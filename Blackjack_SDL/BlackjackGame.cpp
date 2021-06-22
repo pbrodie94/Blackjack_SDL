@@ -126,6 +126,8 @@ void BlackjackGame::LoadResources()
 	s_dealer = new Sprite(dealerTexture, SCREENWIDTH / 2, 50, renderer);
 	s_dealer->SetWidth(138);
 	s_dealer->SetHeight(152);
+	s_dealer->SetRectWidth(138);
+	s_dealer->SetRectHeight(152);
 	s_dealer->SetFrame(0);
 	s_dealer->SetXPosition(s_dealer->GetXPosition() - s_dealer->GetWidth() / 2);
 	s_dealer->visible = false;
@@ -193,7 +195,7 @@ void BlackjackGame::GameLoop()
 		}
 
 		//Draw the background before anything else
-		//SDL_RenderClear(renderer);
+		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, bgTexture, NULL, NULL);
 
 		//Draw other game pieces to screen
@@ -348,9 +350,10 @@ void BlackjackGame::DealCards()
 	playerHands[0]->AddCard(deck.DrawCard());
 	dealerHand->AddCard(deck.DrawCard());
 	playerHands[0]->AddCard(deck.DrawCard());
-	PlayingCard card = deck.DrawCard();
-	card.hidden = true;
-	dealerHand->AddCard(card);
+	//PlayingCard card = deck.DrawCard();
+	//card.hidden = true;
+	//dealerHand->AddCard(card);
+	dealerHand->AddCard(deck.DrawCard());
 
 	gameState = GameState::PlayersTurn;
 
@@ -375,13 +378,13 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 	{
 		//Turn over
 		t_instructionsText->visible = false;
-		dealerHand->UnHideCards();
+		//dealerHand->UnHideCards();
 		gameState = GameState::DealersTurn;
 		return;
 	}
 	else if (playerSplitHand && playerHands[0]->stand && playerHands[1]->stand) {
 		t_instructionsText->visible = false;
-		dealerHand->UnHideCards();
+		//dealerHand->UnHideCards();
 		gameState = GameState::DealersTurn;
 		return;
 	}

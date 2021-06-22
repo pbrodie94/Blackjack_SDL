@@ -13,8 +13,10 @@ protected:
 	SDL_Texture* image;
 	SDL_Rect rect;
 
-	int xPosition;;
+	int xPosition;
 	int yPosition;
+	int width;
+	int height;
 
 public:
 
@@ -28,6 +30,8 @@ public:
 
 	void SetWidth(int width);
 	void SetHeight(int height);
+	void SetRectWidth(int width);
+	void SetRectHeight(int height);
 	void SetXPosition(int x);
 	void SetYPosition(int y);
 	void SetTexture(SDL_Texture* texture);
