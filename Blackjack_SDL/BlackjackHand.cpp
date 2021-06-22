@@ -25,6 +25,16 @@ BlackjackHand::~BlackjackHand()
 	SDL_DestroyTexture(cardBackTexture);
 
 	ResetHand();
+
+	for (int i = 0; i < cardSprites.size(); i++)
+	{
+		if (cardSprites[i] != nullptr)
+		{
+			delete cardSprites[i];
+		}
+	}
+
+	cardSprites.clear();
 }
 
 void BlackjackHand::AddCard(PlayingCard card)
@@ -32,38 +42,9 @@ void BlackjackHand::AddCard(PlayingCard card)
 	cards.push_back(card);
 	numCards++;
 	
-	int cardNum = card.GetCardValue();
-
-	switch (cardNum)
+	if (!card.hidden)
 	{
-	case 1:
-		//Ace
-		numAces++;
-
-		handValue += 11;
-
-		if (handValue > 21)
-		{
-			handValue -= 10;
-			numAces--;
-		}
-		break;
-
-	case 11:
-
-	case 12:
-
-	case 13:
-
-		handValue += 10;
-
-		break;
-
-	default:
-
-		handValue += cardNum;
-
-		break;
+		handValue += GetCardValue(card.GetCardValue());
 	}
 
 	if (handValue > 21)
@@ -106,11 +87,12 @@ void BlackjackHand::AddCard(PlayingCard card)
 
 void BlackjackHand::UnHideCards()
 {
-	for (int i = 0; i < cardSprites.size(); i++)
+	for (int i = 0; i < numCards; i++)
 	{
-		if (cardSprites[i]->hidden)
+		if (cards[i].hidden)
 		{
 			cardSprites[i]->UnHide(cards[i].GetCardValue(), cards[i].GetCardSuit());
+			handValue += GetCardValue(cards[i].GetCardValue());
 		}
 	}
 }
@@ -136,14 +118,6 @@ void BlackjackHand::DisplayHand()
 
 	//Access the cards in hand and draw them to screen with the cardsprite objects
 	int offset = 20 * numCards - 1;
-
-	/*if (!cards[numCards - 1].hidden)
-	{
-		cardSprites.push_back(new CardSprite(cards[numCards - 1].GetCardValue(), cards[numCards - 1].GetCardSuit(), startXPos - offset, startYPos, cardTexture, cardFaceTexture, renderer));
-	}
-	else {
-		cardSprites.push_back(new CardSprite(startXPos - offset, startYPos, cardBackTexture, renderer));
-	}*/
 
 	if (cardSprites.size() < numCards)
 	{
@@ -178,9 +152,43 @@ void BlackjackHand::ResetHand()
 
 	cards.clear();
 
-	//delete the pointers
+	//make card sprites invisible
 	for (int i = 0; i < cardSprites.size(); i++)
 	{
 		cardSprites[i]->visible = false;
 	}
+}
+
+int BlackjackHand::GetCardValue(int cardValue)
+{
+	int value = 0;
+
+	switch (cardValue)
+	{
+	case 1:
+		//Ace
+		numAces++;
+
+		value = 11;
+
+		break;
+
+	case 11:
+
+	case 12:
+
+	case 13:
+
+		value = 10;
+
+		break;
+
+	default:
+
+		value = cardValue;
+
+		break;
+	}
+
+	return value;
 }

@@ -350,10 +350,10 @@ void BlackjackGame::DealCards()
 	playerHands[0]->AddCard(deck.DrawCard());
 	dealerHand->AddCard(deck.DrawCard());
 	playerHands[0]->AddCard(deck.DrawCard());
-	//PlayingCard card = deck.DrawCard();
-	//card.hidden = true;
-	//dealerHand->AddCard(card);
-	dealerHand->AddCard(deck.DrawCard());
+	PlayingCard card = deck.DrawCard();
+	card.hidden = true;
+	dealerHand->AddCard(card);
+	//dealerHand->AddCard(deck.DrawCard());
 
 	gameState = GameState::PlayersTurn;
 
@@ -378,13 +378,15 @@ void BlackjackGame::PlayerTurn(const Uint8* keys)
 	{
 		//Turn over
 		t_instructionsText->visible = false;
-		//dealerHand->UnHideCards();
+		dealerHand->UnHideCards();
+		UpdateText();
 		gameState = GameState::DealersTurn;
 		return;
 	}
 	else if (playerSplitHand && playerHands[0]->stand && playerHands[1]->stand) {
 		t_instructionsText->visible = false;
-		//dealerHand->UnHideCards();
+		dealerHand->UnHideCards();
+		UpdateText();
 		gameState = GameState::DealersTurn;
 		return;
 	}

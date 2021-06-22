@@ -9,6 +9,7 @@ class BlackjackHand
 {
 private:
 	void DisplayHand();
+	int GetCardValue(int cardValue);
 
 	vector<PlayingCard> cards;
 
