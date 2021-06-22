@@ -1,2 +1,19 @@
-﻿  Main.cpp
+﻿  BlackjackGame.cpp
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(35,18): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(36,20): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(37,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(38,24): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(39,22): warning C4150: deletion of pointer to incomplete type 'SDL_Texture'; no destructor called
+C:\SDL2-2.0.12\include\SDL_render.h(138): message : see declaration of 'SDL_Texture'
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(594,24): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(660,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(782,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(793,21): warning C4018: '<': signed/unsigned mismatch
+  Main.cpp
+  Generating Code...
+C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Blackjack_SDL\BlackjackGame.cpp(836): warning C4715: 'BlackjackGame::CheckWin': not all control paths return a value
   Blackjack_SDL.vcxproj -> C:\Users\pbrod\Documents\VGD Toronto Film School\Semester 2\Programming Fundamentals 1\Labs\Blackjack_SDL\Debug\Blackjack_SDL.exe

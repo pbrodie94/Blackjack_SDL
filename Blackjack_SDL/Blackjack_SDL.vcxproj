@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{774a7c77-d167-4495-bafe-f251b5adb3c6}</ProjectGuid>
+    <ProjectGuid>{62261c06-9b29-4fa6-b5c4-95635f335fb3}</ProjectGuid>
     <RootNamespace>BlackjackSDL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -145,10 +145,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="BlackjackGame.cpp" />
+    <ClCompile Include="BlackjackHand.cpp" />
+    <ClCompile Include="CardDeck.cpp" />
+    <ClCompile Include="CardSprite.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PlayingCard.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BlackjackGame.h" />
+    <ClInclude Include="BlackjackHand.h" />
+    <ClInclude Include="CardDeck.h" />
+    <ClInclude Include="CardSprite.h" />
     <ClInclude Include="Definitions.h" />
+    <ClInclude Include="PlayingCard.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TextRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
